@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% extends 'accounts/base.html' %}
+    {% block title %}
+    <title>Головна сторінка</title>
+    {% endblock %}
+    <style>
+        /* Додайте стилі тут */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        header {
+            background: #f4f4f4;
+            padding: 10px;
+        }
+        nav a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+        main {
+            padding: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        ul li {
+            margin-bottom: 10px;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .pagination span {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+{% block content %}
+<body>
+    <main>
+        <h1>Оголошення</h1>
+
+        <form method="get" action="{% url 'home' %}">
+            <input type="text" name="search" value="{{ search_query }}" placeholder="Пошук оголошень...">
+            <input type="submit" value="Пошук">
+        </form>
+
+        <!-- Тут можна додати фільтри -->
+        <!--
+        <form method="get" action="{% url 'home' %}">
+            <select name="filter">
+                <option value="">Без фільтра</option>
+                <option value="some_filter" {% if filter_query == 'some_filter' %}selected{% endif %}>Фільтр 1</option>
+            </select>
+            <input type="submit" value="Застосувати">
+        </form>
+        -->
+
+        <ul>
+            {% for ad in page_obj.object_list %}
+                <li>
+                    <h2>{{ ad.title }}</h2>
+                    <p>{{ ad.description }}</p>
+                    <p>Створено: {{ ad.created_at }}</p>
+                </li>
+            {% empty %}
+                <li>Оголошень немає.</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Пагінація -->
+        <div class="pagination">
+            <span>Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}</span>
+            <div>
+                <span>Перейти на сторінку:</span>
+                <form method="get" action="{% url 'home' %}">
+                    <input type="number" name="page" min="1" max="{{ page_obj.paginator.num_pages }}" value="{{ page_obj.number }}">
+                    <input type="submit" value="Перейти">
+                </form>
+            </div>
+            <div>
+                <span>Попередня: {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_query %}&filter={{ filter_query }}{% endif %}">Назад</a>{% else %}—{% endif %}</span>
+                <span>Наступна: {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_query %}&filter={{ filter_query }}{% endif %}">Вперед</a>{% else %}—{% endif %}</span>
+            </div>
+            <div class="step-links">
+                {% if page_obj.has_previous %}
+                    <a href="?page=1">&laquo; Перша</a>
+                    <a href="?page={{ page_obj.previous_page_number }}">Попередня</a>
+                {% endif %}
+
+                <span class="current">
+                    Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}.
+                </span>
+
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">Наступна</a>
+                    <a href="?page={{ page_obj.paginator.num_pages }}">Остання &raquo;</a>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+</body>
+{% endblock %}
+</html>

@@ -1,0 +1,22 @@
+<!-- templates/accounts/register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register or Login</title>
+</head>
+<body>
+    <h2>Register</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ register_form.as_p }}
+        <button type="submit" name="register">Register</button>
+    </form>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ login_form.as_p }}
+        <button type="submit" name="login">Login</button>
+    </form>
+</body>
+</html>
